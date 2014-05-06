@@ -22,6 +22,20 @@ public class AllenTable {
         inv.put("fi", "f");
         
         mapping = new HashMap<String, HashMap<String, String>>();
+        
+        // "<"
+        mapping.put("=", new HashMap<String,String>() {{ put("<", "<"); }});
+        mapping.put("=", new HashMap<String,String>() {{ put(">", ">"); }});
+        mapping.put("=", new HashMap<String,String>() {{ put("d", "d"); }});
+        mapping.put("=", new HashMap<String,String>() {{ put("di", "di"); }});
+        mapping.put("=", new HashMap<String,String>() {{ put("o", "o"); }});
+        mapping.put("=", new HashMap<String,String>() {{ put("oi", "oi"); }});
+        mapping.put("=", new HashMap<String,String>() {{ put("m", "m"); }});
+        mapping.put("=", new HashMap<String,String>() {{ put("mi", "mi"); }});
+        mapping.put("=", new HashMap<String,String>() {{ put("s", "s"); }});
+        mapping.put("=", new HashMap<String,String>() {{ put("si", "si"); }});
+        mapping.put("=", new HashMap<String,String>() {{ put("f", "f"); }});
+        mapping.put("=", new HashMap<String,String>() {{ put("fi", "fi"); }});        
         // "<"
         mapping.put("<", new HashMap<String,String>() {{ put("<", "<"); }});
         mapping.put("<", new HashMap<String,String>() {{ put(">", "=,<,>,d,di,o,oi,m,mi,s,si,f,fi"); }});
@@ -181,8 +195,17 @@ public class AllenTable {
         
     }
     
-    public static String inverse(String relation) {
-    	return inv.get(relation);
+    public static String inverse(String relations) {
+    	String[] splittedrelations = relations.split(",");
+    	
+    	String result = inv.get(splittedrelations[0]);
+    	int i = 1;
+    	while( i < splittedrelations.length ) {
+    		result += "," + inv.get(splittedrelations[i]);
+    		++i;
+    	}
+    	
+    	return result;
     }
     
     public static String pfunction(String relation1, String relation2) {
