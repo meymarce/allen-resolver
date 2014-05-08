@@ -8,18 +8,41 @@ public class Resolver {
 	private List<Condition> conditions;
 	//private Output output;
 	
-	public Resolver(List<Condition> conditions, String bridge) {
+	public Resolver(List<Condition> conditions) {
 		this.conditions = conditions;	
 	}
 	
 	public void resolveConditions() {
+		boolean completeness = true;
+		Condition condition1 = null, condition2 = null, toProof;
+		for( int i = 0; i < 3; ++i) {
+			switch(i) {
+			case 0:
+				condition1 = this.conditions.get(1);
+				condition2 = this.conditions.get(2);
+			case 1:
+				condition1 = this.conditions.get(0);
+				condition2 = this.conditions.get(2);
+			case 2:
+				condition1 = this.conditions.get(0);
+				condition2 = this.conditions.get(1);
+			}
+			toProof = this.conditions.get(i);
+			
+			completeness = completeness && resolveCondition(condition1, condition2, toProof);
+			completeness = completeness && resolveCondition(condition1, condition2, new Condition(5, toProof.getTo(), toProof.getFrom(), toProof.getInverseEdge()));
+		}
 		
+		if( !completeness ) {
+			System.out.println("Das Netz ist nicht vollständig");
+		} else {
+			System.out.println("Das Netz ist vollständig");
+		}
 	}
 	
 	private boolean resolveCondition(Condition condition1, Condition condition2, Condition toProof) {
 		Condition step1 = null, step2 = null, used = null, unused = null;
 		List<String> resolvedallen, toproofallen, resultallen = new ArrayList<String>();
-		boolean result = false;
 		
 		if( toProof.getFrom() == condition1.getFrom() ) {
 			used=step1=condition1;			
@@ -56,13 +79,13 @@ public class Resolver {
 			}
 		}
 		
-		// TODO: Output stuff to output
 		if( resultallen.isEmpty() ) {
-			System.out.println("Fehler: Schnittmenge der Bedingung " + toProof.toString() + " ist leer");
+			System.out.println("Fehler: Schnittmenge der Bedingung " + toProof.toString() + " ist leer und damit die Kante nicht konsistent");
+		} else {
+			System.out.println("Die Schnittmenge ist " + toProof.getEdge());
 		}
 		
-		return !resultallen.isEmpty(); 
-		
+		return !resultallen.isEmpty();		
 	}
 	
 	
