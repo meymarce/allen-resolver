@@ -4,7 +4,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
+/**
+ * This class parses a given string by the user to define the net for the resolution
+ * 
+ * @author woitzik
+ *
+ */
 public class Parser {
 	private final Pattern COND_REGEX = Pattern.compile("^[A-Z]\\{(=|<|>|d|di|o|oi|m|mi|s|si|f|fi)(,(=|<|>|d|di|o|oi|m|mi|s|si|f|fi))*\\}[A-Z]$");
 	private final Pattern COND_FROM_REGEX = Pattern.compile("^[A-Z]");
@@ -12,33 +17,123 @@ public class Parser {
 	private final Pattern COND_EDGE_REGEX = Pattern.compile("\\{(=|<|>|d|di|o|oi|m|mi|s|si|f|fi)(,(=|<|>|d|di|o|oi|m|mi|s|si|f|fi))*\\}");
 	private final Pattern COND_EDGE_CHOICE_REGEX = Pattern.compile("[0-2](,[0-2])*");
 	
+	private UserInterface ui;
+	private Resolver resolver;
 	private List<Condition> conditions;
 	private List<String> bridge;
-	private Resolver resolver;
 	
-	
-	public Parser() {
+	/**
+	 * Default constructor
+	 */
+	public Parser(UserInterface ui) {
 		this.conditions = new ArrayList<Condition>();
 		this.bridge = new ArrayList<String>();
+		this.ui = ui;
 	}
 	
-	public boolean startResolving() {
-			Resolver.resolveConditions(conditions);
+	/**
+	 * Starts resolving of the net
+	 */
+	public void startResolving() {
+		resolver = new Resolver(this.ui, conditions);
+		
+		resolver.resolveConditions(conditions);
+	}
+	
+	/**
+	 * Parses the conditions string given by the user
+	 * 
+	 * @param input A string of at least 3 conditions to create the net. Format: Edge{Relation/s}Edge,Edge{Relation/s}Edge,Edge{Relation/s}Edge
+	 * @return True {Parsing completed} False {Error while parsing the given conditions}
+	 */
+	public boolean readConditions(String input) {
+		List<String> splittedConditions = Arrays.asList(input.split("\\|"));
+		
+		// The user entered < 3 conditions
+		if(splittedConditions.size() != 3) {
+			ui.showErrorMessage("Fehler: Es müssen mindesten 3 Randbedingungen angegeben werden.");
 			
+			return false;
+		}
+		
+		// Check syntax of the complete conditions string
+		int i = 0;
+		for (String condition : splittedConditions) {			
+			Matcher syntaxMatcher = COND_REGEX.matcher(condition);
+			
+			// Checks if the syntax of the conditions string is correct
+			if(syntaxMatcher.find() == false) {
+				ui.showErrorMessage("Fehler: Syntaxfehler in der Bedingung " + condition);
+				
+				return false;
+			}
+			
+			// Applies the regex definitions on the condition
+			// e.g. A{<,=}B
+			Matcher fromMatcher = COND_FROM_REGEX.matcher(condition); // A
+			Matcher toMatcher = COND_TO_REGEX.matcher(condition); // B
+			Matcher edgeMatcher = COND_EDGE_REGEX.matcher(condition); // <,=
+			
+			// Checks whether a valid condition was given
+			if(fromMatcher.find() == true && toMatcher.find() == true && edgeMatcher.find() == true) {
+				Character from = fromMatcher.group(0).charAt(0);		
+				Character to = toMatcher.group(0).charAt(0);
+				String edge = edgeMatcher.group(0).substring(1, edgeMatcher.group(0).length()-1);
+				
+				Condition parsedCondition = new Condition(i, from, to, edge);  
+				this.conditions.add(parsedCondition);
+				
+			} else {
+				ui.showErrorMessage("Fehler: Parsen der Informationen fehlgeschlagen.");
+				
+				return false;
+			}
+		
+			++i;
+		}
+		
+		// Check for any contradictions in the parsed conditions
+		if(checkForContradictions() == false) {
+			return false;
+		}
+		
 		return true;
 	}
 	
+	/**
+	 * Parses the bridge given by the user
+	 * @param input A string of the format {<,=} or ({Relation/s})
+	 * @return True {Parsing completed} False {Error while parsing the given bridge}
+	 */
+	public boolean readBridge(String input) {
+		Matcher edgeMatcher = COND_EDGE_REGEX.matcher(input);
+		if(edgeMatcher.find() == true) {
+			this.bridge.add(edgeMatcher.group(0).substring(1, edgeMatcher.group(0).length()-1));
+		} else {
+			ui.showErrorMessage("Fehler: Syntaxfehler in der Bridge " + input);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Adds the bridge to the edges of the conditions, chosen by the user
+	 * @param input The chosen edges, e.g. 0,2
+	 * @return True {Adding completed} False {Error because of an invalid input}
+	 */
 	public boolean addBridge(String input) {
 		Matcher edgeChoiceMatcher = COND_EDGE_CHOICE_REGEX.matcher(input);
 		
+		// Checks the validation of the choice input
 		if(edgeChoiceMatcher.find() == false) {
-			System.out.println("Fehler: Ihre Auswahl " + input + " ist nicht korrekt.");
+			ui.showErrorMessage("Fehler: Ihre Auswahl " + input + " ist nicht korrekt.");
 			
 			return false;
 		} else {
-			System.out.println("Choice: " + input);
 			List<String> splittedChoices = Arrays.asList(input.split(","));
 			
+			// Adds for each chosen edge the bridge to the relations string
 			for(String choice : splittedChoices) {
 				for(Condition condition : conditions) {
 					if(condition.getId() == Integer.parseInt(choice)) {
@@ -66,65 +161,48 @@ public class Parser {
 		return true;
 	}
 	
-	public boolean readConditions(String input) {
-		List<String> splittedConditions = Arrays.asList(input.split("\\|"));
-
-		if(splittedConditions.size() != 3) {
-			System.out.println("Fehler: Es müssen mindesten 3 Randbedingungen angegeben werden.");
-			
-			return false;
+	/**
+	 * This method searches for contradictions in the given conditions. Contradictions are:
+	 * A->A
+	 * A->B and B->A
+	 * @return True {No contradictions found} False {If a contradiction was found}
+	 */
+	public boolean checkForContradictions() {
+		//A->A
+		for(Condition condition : conditions) {
+			if(condition.getFrom() == condition.getTo()) {
+				ui.showErrorMessage("Fehler: Diese Bedingung ist nicht möglich " + condition.toString());
+				
+				return false;
+			}
 		}
 		
-		int i = 0;
-		for (String condition : splittedConditions) {			
-			Matcher syntaxMatcher = COND_REGEX.matcher(condition);
-			
-			if(syntaxMatcher.find() == false) {
-				System.out.println("Fehler: Syntaxfehler in der Bedingung " + condition);
+		//A->B and B->A or A->B and A->B 
+		for(int i=0; i<conditions.size();++i) {
+			for(int j=1; j<conditions.size();++j) {
+				//A->B and B->A
+				if((conditions.get(i).getFrom() == conditions.get(j).getTo()) && (conditions.get(j).getFrom() == conditions.get(i).getTo())) {
+					ui.showErrorMessage("Fehler: Diese Bedingungen sind nicht möglich " + conditions.get(i) + " " + conditions.get(j));
+					
+					return false;
+				}
 				
-				return false;
+				//A->B and A->B
+				if((conditions.get(i) != conditions.get(j)) && (conditions.get(i).getFrom() == conditions.get(j).getFrom()) && (conditions.get(j).getTo() == conditions.get(i).getTo())) {
+					ui.showErrorMessage("Fehler: Diese Bedingungen sind nicht möglich " + conditions.get(i) + " " + conditions.get(j));
+					
+					return false;
+				}
 			}
-			
-			Matcher fromMatcher = COND_FROM_REGEX.matcher(condition);
-			Matcher toMatcher = COND_TO_REGEX.matcher(condition);
-			Matcher edgeMatcher = COND_EDGE_REGEX.matcher(condition);
-			
-			if(fromMatcher.find() == true && toMatcher.find() == true && edgeMatcher.find() == true) {
-				Character from = fromMatcher.group(0).charAt(0);
-				System.out.println(from);	
-				
-				Character to = toMatcher.group(0).charAt(0);
-				System.out.println(to);	
-				
-				String edge = edgeMatcher.group(0).substring(1, edgeMatcher.group(0).length()-1);
-				System.out.println(edge);
-				Condition parsedCondition = new Condition(i, from, to, edge);  
-				System.out.println(condition.toString());
-				this.conditions.add(parsedCondition);
-			} else {
-				System.out.println("Fehler: Parsen der Informationen fehlgeschlagen.");
-				
-				return false;
-			}
-		
-			++i;
 		}
 		
 		return true;
 	}
 	
-	public boolean readBridge(String input) {
-		Matcher edgeMatcher = COND_EDGE_REGEX.matcher(input);
-		if(edgeMatcher.find() == true) {
-			this.bridge.add(edgeMatcher.group(0).substring(1, edgeMatcher.group(0).length()-1));
-		} else {
-			System.out.println("Fehler: Syntaxfehler in der Bridge " + input);
-			return false;
-		}
-		
-		return true;
-	}
-
+	/**
+	 * Returns a list with the entered conditions
+	 * @return The list with the conditions
+	 */
 	public List<Condition> getConditions() {
 		return conditions;
 	}	

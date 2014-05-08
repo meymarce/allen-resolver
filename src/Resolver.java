@@ -76,15 +76,15 @@ public class Resolver {
 				}
 			}
 		}
-		
-    	String resultallenstring = resultallen.get(0);
-    	for( int i = 1; i < resultallen.size(); ++i ) {
-    		resultallenstring += "," + resultallen.get(i);
-    	}
-		
+			
 		if( resultallen.isEmpty() ) {
 			System.out.println("Fehler: Schnittmenge der Bedingung " + toProof.toString() + " ist leer und damit die Kante nicht konsistent");
 		} else {
+			String resultallenstring = resultallen.get(0);
+	    	for( int i = 1; i < resultallen.size(); ++i ) {
+	    		resultallenstring += "," + resultallen.get(i);
+	    	}
+			
 			System.out.println("Die Schnittmenge von Bedingung " + toProof.toString() + " ist " + resultallenstring);
 		}
 		
