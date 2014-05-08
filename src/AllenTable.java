@@ -1,10 +1,19 @@
-import java.lang.reflect.Array;
 import java.util.*;
 
+/**
+ * The AllenTable class provides functions to work with Allens relations
+ * 
+ * @author marcel.meyer2@hp.com
+ *
+ */
 public class AllenTable {
 	private static final HashMap<String, String> inv;
 	private static final HashMap<String, String> mapping;
 	
+	/**
+	 * Static initializer
+	 * 
+	 */
     static
     {
         inv = new HashMap<String, String>();
@@ -209,9 +218,16 @@ public class AllenTable {
         
     }
     
+    /**
+     * Function to inverse a comma-separated set of Allen relations
+     * 
+     * @param relations The set of comma-separated Allen relations
+     * @return The inverse set of comma-separated Allen relations
+     */
     public static String inverse(String relations) {
     	String[] splittedrelations = relations.split(",");
     	
+    	//inverse each relation and concatenate them comma-separated
     	String result = inv.get(splittedrelations[0]);
     	for( int i = 1; i < splittedrelations.length; ++i ) {
     		result += "," + inv.get(splittedrelations[i]);
@@ -220,8 +236,17 @@ public class AllenTable {
     	return result;
     }
     
+    /**
+     * Function to calculate the pfunction of Allen
+     * 
+     * @param relation1 The first set of comma-separated Allen relations
+     * @param relation2 The second set of comma-separated Allen relations
+     * @return The result of the pfunction
+     */
     public static String pfunction(String relation1, String relation2) {
     	List<String> splittedrelation1 = Arrays.asList(relation1.split(",")), splittedrelation2 = Arrays.asList(relation2.split(",")), resolvedrelations = new ArrayList<String>(), resultrelations = new ArrayList<String>();
+    	
+    	// map all relations with each other and add each relation of the result to the resultrelation if not already present
     	for( int i = 0; i < splittedrelation1.size(); ++i) {
     		for( int k = 0; k < splittedrelation2.size(); ++k) {
     			resolvedrelations = Arrays.asList(mapping.get(splittedrelation1.get(i) + "," + splittedrelation2.get(k)).split(","));
@@ -232,6 +257,8 @@ public class AllenTable {
     			}
        		} 		
     	}
+    	
+    	// build a string out of it
     	String result = resultrelations.get(0);
     	for( int i = 1; i < resultrelations.size(); ++i ) {
     		result += "," + resultrelations.get(i);
