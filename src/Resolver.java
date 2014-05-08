@@ -15,17 +15,20 @@ public class Resolver {
 			case 0:
 				condition1 = conditions.get(1);
 				condition2 = conditions.get(2);
+				break;
 			case 1:
 				condition1 = conditions.get(0);
 				condition2 = conditions.get(2);
+				break;
 			case 2:
 				condition1 = conditions.get(0);
 				condition2 = conditions.get(1);
+				break;
 			}
 			toProof = conditions.get(i);
 			
-			completeness = completeness && resolveCondition(condition1, condition2, toProof);
-			completeness = completeness && resolveCondition(condition1, condition2, new Condition(5, toProof.getTo(), toProof.getFrom(), toProof.getInverseEdge()));
+			completeness = resolveCondition(condition1, condition2, toProof) && completeness;
+			completeness = resolveCondition(condition1, condition2, new Condition(5, toProof.getTo(), toProof.getFrom(), toProof.getInverseEdge())) && completeness;
 		}
 		
 		if( !completeness ) {
@@ -35,7 +38,7 @@ public class Resolver {
 		}
 	}
 	
-	private static boolean resolveCondition(Condition condition1, Condition condition2, Condition toProof) {
+	private static boolean resolveCondition(Condition condition1, Condition condition2, Condition toProof) {		
 		Condition step1 = null, step2 = null, used = null, unused = null;
 		List<String> resolvedallen, toproofallen, resultallen = new ArrayList<String>();
 		
@@ -68,7 +71,7 @@ public class Resolver {
 		toproofallen = Arrays.asList(toProof.getEdge().split(","));
 		for( int i = 0; i < resolvedallen.size(); ++i ) {
 			for( int j = 0; j < toproofallen.size(); ++j ) {
-  				if( resolvedallen.get(i).equals(toproofallen.get(j)) && !resultallen.contains(toproofallen.get(j)) ) {
+  				if( (resolvedallen.get(i).equals(toproofallen.get(j))) && !resultallen.contains(toproofallen.get(j)) ) {
 					resultallen.add(toproofallen.get(j));
 				}
 			}
@@ -86,17 +89,5 @@ public class Resolver {
 		}
 		
 		return !resultallen.isEmpty();		
-	}
-	
-	
-	public static void main(String[] args) {
-		Condition cond1, cond2, step;
-		cond1 = new Condition(0, 'A', 'B', ">,<");
-		cond2 = new Condition(1, 'B', 'C', "m,d");
-		step = cond1;
-		
-		System.out.println((step == cond1));
-		System.out.println(step.equals(cond1));
-		
 	}
 }
