@@ -111,7 +111,7 @@ public class Resolver {
 				}
 			}
 		}
-		
+
 		// output the proofs result using the UserInterface
     	if( resultallen.isEmpty() ) {
 			System.out.println("Fehler: Schnittmenge der Bedingung " + toProof.toString() + " ist leer und damit die Kante nicht konsistent");
@@ -120,6 +120,7 @@ public class Resolver {
 	    	for( int i = 1; i < resultallen.size(); ++i ) {
 	    		resultallenstring += "," + resultallen.get(i);
 	    	}
+
 			System.out.println("Die Schnittmenge von Bedingung " + toProof.toString() + " ist " + resultallenstring);
 		}
 		
