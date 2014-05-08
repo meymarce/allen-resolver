@@ -208,7 +208,7 @@ public class AllenTable {
     }
     
     public static String pfunction(String relation1, String relation2) {
-    	List<String> splittedrelation1 = Arrays.asList(relation1.split(",")), splittedrelation2 = Arrays.asList(relation2.split(",")), resolvedrelations, resultrelations = null;
+    	List<String> splittedrelation1 = Arrays.asList(relation1.split(",")), splittedrelation2 = Arrays.asList(relation2.split(",")), resolvedrelations, resultrelations = new ArrayList<String>();
     	for( int i = 0; i < splittedrelation1.size(); ++i) {
     		for( int k = 0; k < splittedrelation2.size(); ++k) {
     			resolvedrelations = Arrays.asList(mapping.get(splittedrelation1.get(i)).get(splittedrelation2.get(k).split(",")));
