@@ -23,7 +23,7 @@ public class Parser {
 	}
 	
 	public boolean startResolving() {
-			resolver.resolveConditions(conditions);
+			Resolver.resolveConditions(conditions);
 			
 		return true;
 	}
