@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 public class UserInterface {
 	
+	//TODO: Show error method
+	
 	public void startConversation() {
 		Parser parser = new Parser();
 		String conditionsInput = "";
@@ -60,7 +62,7 @@ public class UserInterface {
 				parser.addBridge(choiceInput);
 				
 				parser.startResolving();
-				System.out.println("Ende: Zeitnetz wurde erfolgreich überprüft.");
+				System.out.println("Ende: Zeitnetz wurde erfolgreich mit Brücke überprüft.");
 			}
 		}
 	}

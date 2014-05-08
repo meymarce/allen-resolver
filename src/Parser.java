@@ -13,18 +13,18 @@ public class Parser {
 	private final Pattern COND_EDGE_CHOICE_REGEX = Pattern.compile("[0-2](,[0-2])*");
 	
 	private List<Condition> conditions;
-	private List<Condition> conditionsWithBridge;
-	private String bridge;
+	private List<String> bridge;
 	private Resolver resolver;
 	
 	
 	public Parser() {
 		this.conditions = new ArrayList<Condition>();
-		this.conditionsWithBridge = new ArrayList<Condition>();
+		this.bridge = new ArrayList<String>();
 	}
 	
 	public boolean startResolving() {
-			//resolver.resolveConditions(conditions);
+			resolver.resolveConditions(conditions);
+			
 		return true;
 	}
 	
@@ -36,7 +36,31 @@ public class Parser {
 			
 			return false;
 		} else {
-			System.out.println("CHoice: " + input);
+			System.out.println("Choice: " + input);
+			List<String> splittedChoices = Arrays.asList(input.split(","));
+			
+			for(String choice : splittedChoices) {
+				for(Condition condition : conditions) {
+					if(condition.getId() == Integer.parseInt(choice)) {
+						List<String> edgeList = Arrays.asList(condition.getEdge().split(","));
+						
+						for(String bridgeRelation : bridge) {
+							if( !edgeList.contains(bridgeRelation) ) {
+								edgeList.add(bridgeRelation);
+		    				}
+						}
+						
+						String edgeWithBridge = edgeList.get(0);
+				    	int i = 1;
+				    	while( i < edgeList.size()) {
+				    		edgeWithBridge += "," + edgeList.get(i);
+				    		++i;
+				    	}
+				    	
+				    	condition.setEdge(edgeWithBridge);
+					}
+				}
+			}
 		}
 		
 		return true;
@@ -72,9 +96,8 @@ public class Parser {
 				Character to = toMatcher.group(0).charAt(0);
 				System.out.println(to);	
 				
-				String edge = edgeMatcher.group(0);
+				String edge = edgeMatcher.group(0).substring(1, edgeMatcher.group(0).length()-1);
 				System.out.println(edge);
-				
 				Condition parsedCondition = new Condition(i, from, to, edge);  
 				System.out.println(condition.toString());
 				this.conditions.add(parsedCondition);
@@ -93,11 +116,9 @@ public class Parser {
 	public boolean readBridge(String input) {
 		Matcher edgeMatcher = COND_EDGE_REGEX.matcher(input);
 		if(edgeMatcher.find() == true) {
-			this.bridge = edgeMatcher.group(0);
-			System.out.println(this.bridge);
+			this.bridge.add(edgeMatcher.group(0).substring(1, edgeMatcher.group(0).length()-1));
 		} else {
 			System.out.println("Fehler: Syntaxfehler in der Bridge " + input);
-			
 			return false;
 		}
 		

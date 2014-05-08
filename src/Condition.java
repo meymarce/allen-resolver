@@ -27,6 +27,10 @@ public class Condition {
 	public String getEdge() {
 		return this.edge;
 	}
+	
+	public void setEdge(String value) {
+		this.edge = value;
+	}
 
 	public String getInverseEdge() {
 		return AllenTable.inverse(this.edge);
@@ -34,6 +38,6 @@ public class Condition {
 	
 	@Override
 	public String toString() {
-		return from + edge + to;	
+		return from + "{" + edge + "}" + to;	
 	}
 }
