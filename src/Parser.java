@@ -6,10 +6,10 @@ import java.util.regex.Pattern;
 
 
 public class Parser {
-	private final Pattern COND_REGEX = Pattern.compile("^[A-Z]\\{(<|>|d|di|o|oi|m|mi|s|si|f|fi)(,(<|>|d|di|o|oi|m|mi|s|si|f|fi))*\\}[A-Z]$");
+	private final Pattern COND_REGEX = Pattern.compile("^[A-Z]\\{(=|<|>|d|di|o|oi|m|mi|s|si|f|fi)(,(=|<|>|d|di|o|oi|m|mi|s|si|f|fi))*\\}[A-Z]$");
 	private final Pattern COND_FROM_REGEX = Pattern.compile("^[A-Z]");
 	private final Pattern COND_TO_REGEX = Pattern.compile("[A-Z]$");
-	private final Pattern COND_EDGE_REGEX = Pattern.compile("\\{(<|>|d|di|o|oi|m|mi|s|si|f|fi)(,(<|>|d|di|o|oi|m|mi|s|si|f|fi))*\\}");
+	private final Pattern COND_EDGE_REGEX = Pattern.compile("\\{(=|<|>|d|di|o|oi|m|mi|s|si|f|fi)(,(=|<|>|d|di|o|oi|m|mi|s|si|f|fi))*\\}");
 	private final Pattern COND_EDGE_CHOICE_REGEX = Pattern.compile("[0-2](,[0-2])*");
 	
 	private List<Condition> conditions;
@@ -42,7 +42,7 @@ public class Parser {
 			for(String choice : splittedChoices) {
 				for(Condition condition : conditions) {
 					if(condition.getId() == Integer.parseInt(choice)) {
-						List<String> edgeList = Arrays.asList(condition.getEdge().split(","));
+						List<String> edgeList = new ArrayList<String>(Arrays.asList(condition.getEdge().split(",")));
 						
 						for(String bridgeRelation : bridge) {
 							if( !edgeList.contains(bridgeRelation) ) {
