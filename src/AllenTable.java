@@ -200,10 +200,8 @@ public class AllenTable {
     	String[] splittedrelations = relations.split(",");
     	
     	String result = inv.get(splittedrelations[0]);
-    	int i = 1;
-    	while( i < splittedrelations.length ) {
+    	for( int i = 1; i < splittedrelations.length; ++i ) {
     		result += "," + inv.get(splittedrelations[i]);
-    		++i;
     	}
     	
     	return result;
