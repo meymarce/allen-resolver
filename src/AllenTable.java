@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class AllenTable {
@@ -125,7 +126,7 @@ public class AllenTable {
         mapping.put("m", new HashMap<String,String>() {{ put("mi", "=,f,fi"); }});
         mapping.put("m", new HashMap<String,String>() {{ put("s", "m"); }});
         mapping.put("m", new HashMap<String,String>() {{ put("si", "m"); }});
-        mapping.put("m", new HashMap<String,String>() {{ put("f", "dso"); }});
+        mapping.put("m", new HashMap<String,String>() {{ put("f", "d,s,o"); }});
         mapping.put("m", new HashMap<String,String>() {{ put("fi", "<"); }});
         // "mi"
         mapping.put("mi", new HashMap<String,String>() {{ put("<", "<,o,m,di,fi"); }});
@@ -209,7 +210,19 @@ public class AllenTable {
     }
     
     public static String pfunction(String relation1, String relation2) {
-    	return mapping.get(relation1).get(relation2);
+    	List<String> splittedrelation1 = Arrays.asList(relation1.split(",")), splittedrelation2 = Arrays.asList(relation2.split(",")), resolvedrelations, resultrelations = null;
+    	for( int i = 0; i < splittedrelation1.size(); ++i) {
+    		for( int k = 0; k < splittedrelation2.size(); ++k) {
+    			resolvedrelations = Arrays.asList(mapping.get(splittedrelation1.get(i)).get(splittedrelation2.get(k).split(",")));
+    			for( int l = 0; l < resolvedrelations.size(); ++l) {
+    				if( !resultrelations.contains(resolvedrelations.get(l)) ) {
+    					resultrelations.add(resolvedrelations.get(l));
+    				}
+    			}
+       		} 		
+    	}
+    	
+    	return resultrelations.toString();
     }
     
 	

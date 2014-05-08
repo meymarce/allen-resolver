@@ -2,7 +2,7 @@
 
 public class Condition {
 	private int id;
-	private char from, to;
+	private Character from, to;
 	private String edge;
 	
 	public Condition(int id, char from, char to, String edge) {
