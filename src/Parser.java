@@ -16,7 +16,7 @@ public class Parser {
 	private final Pattern COND_FROM_REGEX = Pattern.compile("^[A-Z]");
 	private final Pattern COND_TO_REGEX = Pattern.compile("[A-Z]$");
 	private final Pattern COND_EDGE_REGEX = Pattern.compile("\\{(=|<|>|d|di|o|oi|m|mi|s|si|f|fi)(,(=|<|>|d|di|o|oi|m|mi|s|si|f|fi))*\\}");
-	private final Pattern COND_EDGE_CHOICE_REGEX = Pattern.compile("[0-2](,[0-2])*");
+	private final Pattern COND_EDGE_CHOICE_REGEX = Pattern.compile("^[0-2](,[0-2])*$");
 	
 	private UserInterface ui;
 	private Resolver resolver;
