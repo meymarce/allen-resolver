@@ -70,9 +70,14 @@ public class UserInterface {
 				choiceInput = s.next();
 				
 				System.out.println();
-				showStatusMessage("Überprüfung des Netzes...\n");
 				
-				parser.addBridge(choiceInput);
+				// Check if the bridge is correct
+				if(!parser.addBridge(choiceInput)) {
+					return;
+				}
+				
+				// Resolve with the bridge
+				showStatusMessage("Überprüfung des Netzes...\n");
 				parser.startResolving();
 				System.out.println();
 				showStatusMessage("Zeitnetz wurde mit der Brücke b überprüft.");
@@ -85,7 +90,7 @@ public class UserInterface {
 	 * @param error The error message
 	 */
 	public void showErrorMessage(String error) {
-		System.err.println("Fehler: " + error);
+		System.out.println("FEHLER: " + error);	
 	}
 	
 	/**
@@ -93,6 +98,6 @@ public class UserInterface {
 	 * @param status  The status message
 	 */
 	public void showStatusMessage(String status) {
-		System.out.println("Status: " + status);
+		System.out.println("STATUS: " + status);
 	}
 }
