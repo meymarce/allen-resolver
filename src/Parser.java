@@ -35,7 +35,7 @@ public class Parser {
 	 * Starts resolving of the net
 	 */
 	public void startResolving() {
-		resolver = new Resolver(this.ui, conditions);
+		//resolver = new Resolver(this.ui, conditions);
 		
 		resolver.resolveConditions(conditions);
 	}
@@ -51,7 +51,7 @@ public class Parser {
 		
 		// The user entered < 3 conditions
 		if(splittedConditions.size() != 3) {
-			ui.showErrorMessage("Fehler: Es müssen mindesten 3 Randbedingungen angegeben werden.");
+			ui.showErrorMessage("Es müssen genau 3 Randbedingungen angegeben werden.");
 			
 			return false;
 		}
@@ -63,7 +63,7 @@ public class Parser {
 			
 			// Checks if the syntax of the conditions string is correct
 			if(syntaxMatcher.find() == false) {
-				ui.showErrorMessage("Fehler: Syntaxfehler in der Bedingung " + condition);
+				ui.showErrorMessage("Syntaxfehler in der Bedingung " + condition);
 				
 				return false;
 			}
@@ -84,7 +84,7 @@ public class Parser {
 				this.conditions.add(parsedCondition);
 				
 			} else {
-				ui.showErrorMessage("Fehler: Parsen der Informationen fehlgeschlagen.");
+				ui.showErrorMessage("Parsen der Informationen fehlgeschlagen.");
 				
 				return false;
 			}
@@ -110,7 +110,7 @@ public class Parser {
 		if(edgeMatcher.find() == true) {
 			this.bridge.add(edgeMatcher.group(0).substring(1, edgeMatcher.group(0).length()-1));
 		} else {
-			ui.showErrorMessage("Fehler: Syntaxfehler in der Bridge " + input);
+			ui.showErrorMessage("Syntaxfehler in der Bridge " + input);
 			return false;
 		}
 		
@@ -127,7 +127,7 @@ public class Parser {
 		
 		// Checks the validation of the choice input
 		if(edgeChoiceMatcher.find() == false) {
-			ui.showErrorMessage("Fehler: Ihre Auswahl " + input + " ist nicht korrekt.");
+			ui.showErrorMessage("Ihre Auswahl " + input + " ist nicht korrekt.");
 			
 			return false;
 		} else {
@@ -171,7 +171,7 @@ public class Parser {
 		//A->A
 		for(Condition condition : conditions) {
 			if(condition.getFrom() == condition.getTo()) {
-				ui.showErrorMessage("Fehler: Diese Bedingung ist nicht möglich " + condition.toString());
+				ui.showErrorMessage("Diese Bedingung ist nicht möglich " + condition.toString());
 				
 				return false;
 			}
@@ -182,14 +182,14 @@ public class Parser {
 			for(int j=1; j<conditions.size();++j) {
 				//A->B and B->A
 				if((conditions.get(i).getFrom() == conditions.get(j).getTo()) && (conditions.get(j).getFrom() == conditions.get(i).getTo())) {
-					ui.showErrorMessage("Fehler: Diese Bedingungen sind nicht möglich " + conditions.get(i) + " " + conditions.get(j));
+					ui.showErrorMessage("Diese Bedingungen sind nicht möglich " + conditions.get(i) + " " + conditions.get(j));
 					
 					return false;
 				}
 				
 				//A->B and A->B
 				if((conditions.get(i) != conditions.get(j)) && (conditions.get(i).getFrom() == conditions.get(j).getFrom()) && (conditions.get(j).getTo() == conditions.get(i).getTo())) {
-					ui.showErrorMessage("Fehler: Diese Bedingungen sind nicht möglich " + conditions.get(i) + " " + conditions.get(j));
+					ui.showErrorMessage("Diese Bedingungen sind nicht möglich " + conditions.get(i) + " " + conditions.get(j));
 					
 					return false;
 				}
