@@ -21,38 +21,40 @@ public class UserInterface {
 		
 		// Description of the application
 		System.out.println("*****Allenparser******");
-		System.out.println("Programm zum Prüfen der Vollständigkeit eines Zeitnetzes, definiert in Allen'scher Zeitlogik");
-		System.out.println();
+		System.out.println("Programm zum Prüfen der Vollständigkeit eines Zeitnetzes, definiert in Allen'scher Zeitlogik.\n");
 		System.out.println("**Definitionen**");
 		System.out.println("Knoten: Großbuchstabe, z.B. A");
-		System.out.println("Kante: Allen'sche Relationen, z.B. <,>,=,d,di,m,mi,o,oi,s,si,f,fi");
+		System.out.println("Kante: Allen'sche Relationen, z.B. <,>,=,d,di,m,mi,o,oi,s,si,f,fi\n");
 		System.out.println("Geben Sie Ihr Zeitnetz mit Knoten und Kanten in folgender Syntax ein: " +
-				"Kante{Relation/en}Kante,Kante{Relation/en}Kante,Kante{Relation/en}Kante");
-		System.out.println("Beispiel: A{<,mi}B|B{=,o}C|C{d,>}A");
-		System.out.println("Optional: Angabe einer Brücke, welche wie eine Relation definiert wird und mehreren Kanten hinzugefügt wird");
-		System.out.println("Beispiel: {<,=,m}");
-		System.out.println();
+				"Kante{Relation/en}Kante|Kante{Relation/en}Kante|Kante{Relation/en}Kante");
+		System.out.println("Beispiel: A{<}B|B{=,o}C|C{d,>}A\n");
+		System.out.println("Optional: Im Anschluss Angabe einer Brücke, welche wie eine Relation definiert wird und mehreren Kanten hinzugefügt werden kann.");
+		System.out.println("Beispiel: {<,=,m}\n");
 		System.out.println("Die Überprüfung erfolgt je mit und ohne Brücke in 2 Schritten:");
 		System.out.println("1. Überprüfung der Konsistenz jeder Kante mit/ohne Brücke, A->B, B->C, C->A usw.");
 		System.out.println("2. Überprüfung, ob das gesamte Netz vollständig ist.");
-		System.out.println("**********************");
+		System.out.println("**********************\n");
 		
 		System.out.println("Geben Sie nun das zu lösende Zeitnetz gemäß der o.g. Syntax ein: ");
 		conditionsInput = s.next();
 		
+		System.out.println();
+		showStatusMessage("Überprüfung des Netzes...\n");
+		
 		// Resolving the net without the bridge
 		if(parser.readConditions(conditionsInput) == false) {
-			showErrorMessage("Fehler: Zeitnetz konnte nicht erfolgreich überprüft werden.");
+			showErrorMessage("Zeitnetz konnte nicht erfolgreich überprüft werden.");
 		} else {
 			parser.startResolving();
-			showStatusMessage("Ende: Zeitnetz wurde erfolgreich überprüft.");
-			
-			System.out.println("Geben Sie nun optional die Brücke b an (Tippen Sie die Eingabetaste, falls sie leer sein soll): ");
+			System.out.println();
+			showStatusMessage("Zeitnetz wurde überprüft.\n");
+			System.out.println("Geben Sie nun die Brücke b an oder beenden Sie das Programm: ");
 			bridgeInput = s.next();
-							
+			System.out.println();
+					
 			// Resolving the net with the bridge
 			if(parser.readBridge(bridgeInput) == false) {
-				showErrorMessage("Fehler: Zeitnetz konnte nicht inklusive der Brücke erfolgreich überprüft werden.");
+				showErrorMessage("Zeitnetz konnte nicht inklusive der Brücke erfolgreich überprüft werden.");
 			} else {
 				
 				System.out.println("An folgenden Kanten kann die Brücke b eingefügt werden: ");
@@ -62,14 +64,18 @@ public class UserInterface {
 					System.out.println("[" + condition.getId() + "] " + condition.toString());
 				}
 				
-				System.out.println("Geben Sie an, an welcher/n Kante/n die Brücke b hinzugefügt werden soll: ");
+				System.out.println("\nGeben Sie an, an welcher/n Kante/n die Brücke b hinzugefügt werden soll: ");
 				System.out.println("Beispiel: 1,2 ");
+				
 				choiceInput = s.next();
 				
-				parser.addBridge(choiceInput);
+				System.out.println();
+				showStatusMessage("Überprüfung des Netzes...\n");
 				
+				parser.addBridge(choiceInput);
 				parser.startResolving();
-				showStatusMessage("Ende: Zeitnetz wurde erfolgreich mit Brücke überprüft.");
+				System.out.println();
+				showStatusMessage("Zeitnetz wurde mit der Brücke b überprüft.");
 			}
 		}
 	}
@@ -79,7 +85,7 @@ public class UserInterface {
 	 * @param error The error message
 	 */
 	public void showErrorMessage(String error) {
-		System.err.println(error);
+		System.err.println("Fehler: " + error);
 	}
 	
 	/**
@@ -87,6 +93,6 @@ public class UserInterface {
 	 * @param status  The status message
 	 */
 	public void showStatusMessage(String status) {
-		System.out.println(status);
+		System.out.println("Status: " + status);
 	}
 }
