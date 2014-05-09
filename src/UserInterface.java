@@ -56,7 +56,7 @@ public class UserInterface {
 		System.out.println("Knoten: Großbuchstabe, z.B. A");
 		System.out.println("Kante: Allen'sche Relationen, z.B. <,>,=,d,di,m,mi,o,oi,s,si,f,fi\n");
 		System.out.println("Geben Sie Ihr Zeitnetz mit Knoten und Kanten in folgender Syntax ein: " +
-				"Kante{Relation/en}Kante|Kante{Relation/en}Kante|Kante{Relation/en}Kante");
+				"Knoten{Relation/en}Knoten|Knoten{Relation/en}Knoten|Knoten{Relation/en}Knoten");
 		System.out.println("Beispiel: A{<}B|B{=,o}C|C{d,>}A\n");
 		System.out.println("Optional: Im Anschluss Angabe einer Brücke, welche wie eine Relation definiert wird und mehreren Kanten hinzugefügt werden kann.");
 		System.out.println("Beispiel: {<,=,m}\n");
