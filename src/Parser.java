@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,9 +36,8 @@ public class Parser {
 	 * Starts resolving of the net
 	 */
 	public void startResolving() {
-		//resolver = new Resolver(this.ui, conditions);
-		
-		resolver.resolveConditions(conditions);
+		resolver = new Resolver(this.ui, conditions);	
+		resolver.resolveConditions();
 	}
 	
 	/**
@@ -78,7 +78,23 @@ public class Parser {
 			if(fromMatcher.find() == true && toMatcher.find() == true && edgeMatcher.find() == true) {
 				Character from = fromMatcher.group(0).charAt(0);		
 				Character to = toMatcher.group(0).charAt(0);
-				String edge = edgeMatcher.group(0).substring(1, edgeMatcher.group(0).length()-1);
+				String edgeWithPossibleDupl = edgeMatcher.group(0).substring(1, edgeMatcher.group(0).length()-1);
+				String edge = "";
+				
+				// Check for duplicates in the given relation part, e.g. {<,<,<,m,s,m}
+				List<String> relationList = new LinkedList<String>(Arrays.asList(edgeWithPossibleDupl.split(",")));
+				if(relationList.size() == 1) {
+					edge = relationList.get(0);
+				} else {
+					edge = relationList.get(0);
+					relationList.remove(edge);
+					
+					for (String relation : relationList) {
+						if(!edge.contains(relation)) {
+							edge+="," + relation;
+						}
+					}
+				}
 				
 				Condition parsedCondition = new Condition(i, from, to, edge);  
 				this.conditions.add(parsedCondition);
