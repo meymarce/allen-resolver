@@ -114,14 +114,14 @@ public class Resolver {
 
 		// output the proofs result using the UserInterface
     	if( resultallen.isEmpty() ) {
-			System.out.println("Fehler: Schnittmenge der Bedingung " + toProof.toString() + " ist leer und damit die Kante nicht konsistent");
+			ui.showErrorMessage("Schnittmenge der Bedingung " + toProof.toString() + " ist leer und damit die Kante nicht konsistent");
 		} else {
 			String resultallenstring = resultallen.get(0);
 	    	for( int i = 1; i < resultallen.size(); ++i ) {
 	    		resultallenstring += "," + resultallen.get(i);
 	    	}
 
-			System.out.println("Die Schnittmenge von Bedingung " + toProof.toString() + " ist " + resultallenstring);
+			ui.showStatusMessage("Die Schnittmenge von Bedingung " + toProof.toString() + " über " + step1.toString() + "," + step2.toString() + " ist " + resultallenstring);
 		}
 		
 		return !resultallen.isEmpty();	//return if there is an intersection
