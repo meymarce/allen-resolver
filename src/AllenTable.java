@@ -190,7 +190,7 @@ public class AllenTable {
         mapping.put("mi,f", "mi");
         mapping.put("mi,fi", "mi");
         // "s"
-        mapping.put("s,=", "=");
+        mapping.put("s,=", "s");
         mapping.put("s,<", "<");
         mapping.put("s,>", ">");
         mapping.put("s,d", "d");
