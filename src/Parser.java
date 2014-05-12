@@ -154,7 +154,16 @@ public class Parser {
 	public boolean readBridge(String input) {
 		Matcher edgeMatcher = COND_EDGE_REGEX.matcher(input);
 		if(edgeMatcher.find() == true) {
-			this.bridge.add(edgeMatcher.group(0).substring(1, edgeMatcher.group(0).length()-1));
+			String regexMatch = edgeMatcher.group(0).substring(1, edgeMatcher.group(0).length()-1);
+			List<String> bridgeWithPossibleDupl = new LinkedList<String>(Arrays.asList(regexMatch.split(",")));
+			
+			// Check for duplicates in the bridge
+			for (String relation : bridgeWithPossibleDupl) {
+				if(!bridge.contains(relation)) {
+					bridge.add(relation);
+				}
+			}
+			
 		} else {
 			ui.showErrorMessage("Syntaxfehler in der Bridge " + input);
 			return false;
