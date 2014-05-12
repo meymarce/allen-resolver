@@ -144,7 +144,7 @@ public class Resolver {
 
 		// output the proofs result using the UserInterface
     	if( resultallen.isEmpty() ) {
-			ui.showErrorMessage("Schnittmenge der Bedingung " + toProof.toString() + " ist leer und damit die Kante nicht konsistent");
+			ui.showErrorMessage("Schnittmenge der Bedingung " + toProof.toString() + " über " + step1.toString() + ", " + step2.toString() + " ist leer und damit die Kante nicht konsistent");
 		} else {
 			String resultallenstring = resultallen.get(0);
 	    	for( int i = 1; i < resultallen.size(); ++i ) {
