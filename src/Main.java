@@ -1,3 +1,5 @@
+import java.io.UnsupportedEncodingException;
+
 /*  
  * Copyright (c) 2014, Marcel Meyer, Sebastian Woitzik
  * All rights reserved.
@@ -41,6 +43,14 @@ public class Main {
 	 * @param args Arguments given with the start command
 	 */
 	public static void main(String[] args) {
+		// Setup the correct stream to show mutated vowels in the console correctly
+		try {
+			System.setOut(new java.io.PrintStream(System.out, true, "cp850"));
+		} catch (UnsupportedEncodingException e) {
+			
+			e.printStackTrace();
+		}
+		
 		// Starts the user interface
 		UserInterface ui = new UserInterface();
 		ui.startConversation();
